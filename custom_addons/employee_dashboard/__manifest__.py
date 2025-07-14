@@ -1,0 +1,16 @@
+# -*- coding: utf-8 -*-
+{
+    'name': 'Employee Dashboard',
+    'version': '1.0',
+    'description': 'Dashboard in Employee module',
+    'data': [
+        'views/employee_menu.xml'
+    ],
+    'assets': {
+        'web.assets_backend': [
+            'employee_dashboard/static/src/js/dashboard.js',
+            'employee_dashboard/static/src/xml/dashboard.xml',
+        ],
+    },
+
+}
