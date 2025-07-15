@@ -12,5 +12,5 @@
             'employee_dashboard/static/src/xml/dashboard.xml',
         ],
     },
-
+    'depends': ['hr','project','base','hr_holidays','hr_org_chart'],
 }
