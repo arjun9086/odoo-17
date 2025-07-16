@@ -1,123 +1,299 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates>
     <t t-name="employee_dashboard.EmployeeDashboard" owl="1">
-        <div class="container mt-4">
-            <h2 class="text-center mb-4">Employee Dashboard</h2>
-            <div class="col w-80">
-                <div class="card shadow-sm" data-type="personal_information" t-on-click="onCardClick">
-                    <div class="card-body">
-                        <div class="h1 text-muted">Personal Info</div>
-                        <div class="h5 fw-bold text-dark">
-                            <t t-if="state.data">
-                                Name:
+        <div class="container mt-4 px-4">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold text-dark">Employee Dashboard</h3>
+            </div>
+            <!-- Colored Summary Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="card text-white shadow-sm border-0" style="background: #4B77BE;">
+                        <div class="card-body">
+                            <div class="text-uppercase small">Total Attendance</div>
+                            <h4 class="fw-bold">
+                                <t t-if="state.data">
+                                    <t t-esc="state.data.total_attendance"/>
+                                    hrs
+                                </t>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white shadow-sm border-0" style="background: #26A65B;">
+                        <div class="card-body">
+                            <div class="text-uppercase small">Leaves Taken</div>
+                            <h4 class="fw-bold">
+                                <t t-if="state.data">
+                                    <t t-esc="state.data.total_leaves"/>
+                                    Days
+                                </t>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white shadow-sm border-0" style="background: #F39C12;">
+                        <div class="card-body">
+                            <div class="text-uppercase small">Projects</div>
+                            <h4 class="fw-bold">
+                                <t t-if="state.data">
+                                    <t t-esc="state.data.total_projects"/>
+                                </t>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white shadow-sm border-0" style="background: #8E44AD;">
+                        <div class="card-body">
+                            <div class="text-uppercase small">Tasks</div>
+                            <h4 class="fw-bold">
+                                <t t-if="state.data">
+                                    <t t-esc="state.data.tasks.length"/>
+                                </t>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Personal Info + Experience -->
+            <div class="row g-4">
+                <!-- Personal Info -->
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm p-4 bg-light">
+                        <h5 class="text-primary border-bottom pb-2 mb-3">Personal Information</h5>
+                        <t t-if="state.data">
+                            <div class="mb-2">
+                                <strong class="text-dark">Name:</strong>
                                 <t t-esc="state.data.employee_name"/>
-                            </t>
-                        </div>
-                        <div class="h5 fw-bold text-dark">
-                            <t t-if="state.data">
-                                Email:
+                            </div>
+                            <div class="mb-2">
+                                <strong class="text-dark">Email:</strong>
                                 <t t-esc="state.data.employee_email"/>
-                            </t>
-                        </div>
-                        <div class="h5 fw-bold text-dark">
-                            <t t-if="state.data">
-                                Phone:
+                            </div>
+                            <div class="mb-2">
+                                <strong class="text-dark">Phone:</strong>
                                 <t t-esc="state.data.employee_phone"/>
-                            </t>
-                        </div>
+                            </div>
+                        </t>
                     </div>
                 </div>
-            </div>
-            <br/>
-            <div class="row g-2">
-                <div class="col-lg-6 m-0 p-0">
-                    <div class="shadow-sm border m-2 p-4 bg-white text-center" data-type="attendance"
-                         t-on-click="onCardClick">
-                        <div class="h3 text-muted">Attendance</div>
-                        <div class="h1 fw-bold text-dark">
-                            <t t-if="state.data">
-                                <t t-esc="state.data.total_attendance"/>
-                                hrs
-                            </t>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 m-0 p-0">
-                    <div class="shadow-sm border m-2 p-4 bg-white text-center" data-type="leave"
-                         t-on-click="onCardClick">
-                        <div class="h3 text-muted">Leaves</div>
-                        <div class="h1 fw-bold text-dark">
-                            <t t-if="state.data">
-                                <t t-esc="state.data.total_leaves"/>
-                                Days
-                            </t>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row g-2">
-                <div class="col-lg-6 m-0 p-0">
-                    <div class="shadow-sm border m-2 p-4 bg-white text-center" data-type="project"
-                         t-on-click="onCardClick">
-                        <div class="h3 text-muted">Projects</div>
-                        <div class="h1 fw-bold text-dark">
-                            <t t-if="state.data">
-                                <t t-esc="state.data.total_projects"/>
-                            </t>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 m-0 p-0">
-                    <div class="shadow-sm border m-2 p-4 bg-white text-center" data-type="task"
-                         t-on-click="onCardClick">
-                        <div class="h3 text-muted">Tasks</div>
-                        <div class="h1 fw-bold text-dark">
-                            <t t-if="state.data">
-                                <t t-esc="state.data.tasks.length"/>
-                            </t>
-                        </div>
-                    </div>
-                </div>
-            </div>
-<!--            <div class="row g-2">-->
-<!--                <div class="col-lg-4">-->
-<!--                    <div class="shadow-sm border p-4 bg-white">-->
-<!--                        <div class="h3 text-muted mb-3">Organization Chart</div>-->
-<!--&lt;!&ndash;                        <t t-if="state.data">&ndash;&gt;-->
-<!--&lt;!&ndash;                            <div class="mb-2">&ndash;&gt;-->
-<!--&lt;!&ndash;                                <span class="fw-bold text-primary">Manager:</span>&ndash;&gt;-->
-<!--&lt;!&ndash;                                <t t-foreach="state.data.org_managers" t-as="mgr" t-key="mgr">&ndash;&gt;-->
-<!--&lt;!&ndash;                                    <div>&ndash;&gt;-->
-<!--&lt;!&ndash;                                        <span class="fw-bold">&ndash;&gt;-->
-<!--&lt;!&ndash;                                            <t t-esc="mgr.name"/>&ndash;&gt;-->
-<!--&lt;!&ndash;                                        </span>&ndash;&gt;-->
-<!--&lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--&lt;!&ndash;                                </t>&ndash;&gt;-->
-<!--&lt;!&ndash;                            </div>&ndash;&gt;-->
-<!--&lt;!&ndash;                        </t>&ndash;&gt;-->
 
-<!--                        &lt;!&ndash;            <div class="mb-2">&ndash;&gt;-->
-<!--                        &lt;!&ndash;                <span class="fw-bold text-success"> You:</span>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                <div>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                    <span class="fw-bold"><t t-esc="state.data.org_employee.name"/></span>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                    <span class="text-muted">(<t t-esc="state.data.org_employee.job_title"/>)</span>&ndash;&gt;-->
-<!--                        &lt;!&ndash;                </div>&ndash;&gt;-->
-<!--                        &lt;!&ndash;            </div>&ndash;&gt;-->
-<!--                        <t t-if="state.data">-->
-<!--                            <div class="mt-2">-->
-<!--                                <span class="fw-bold">Subordinates:</span>-->
-<!--                                <t t-foreach="state.data.org_children" t-as="child" t-key="child">-->
-<!--                                    <div>-->
-<!--                                        <span class="fw-bold">-->
-<!--                                            <t t-esc="child.name"/>-->
-<!--                                        </span>-->
-<!--                                    </div>-->
-<!--                                </t>-->
-<!--                            </div>-->
-<!--                        </t>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
+                <!-- Experience -->
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm p-4 bg-light">
+                        <h5 class="text-success border-bottom pb-2 mb-3">Experience</h5>
+                        <t t-if="state.data and state.data.experience.length">
+                            <t t-foreach="state.data.experience" t-as="line" t-key="line.name">
+                                <div class="mb-3">
+                                    <div class="fw-semibold text-dark">
+                                        <t t-esc="line.name"/>
+                                    </div>
+                                    <div class="text-muted small mb-1">
+                                        <t t-esc="line.date_start"/>
+                                        –
+                                        <t t-esc="line.date_end or 'Present'"/>
+                                    </div>
+                                    <div class="text-muted">
+                                        <t t-esc="line.description"/>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                        <!--            <t t-if="!state.data.experience.length">-->
+                        <!--              <div class="text-muted">No experience data available</div>-->
+                        <!--            </t>-->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Org Chart -->
+            <div class="card border-0 shadow-sm p-4 mt-4" style="background: #F4F6F7;">
+                <h5 class="text-danger border-bottom pb-2 mb-3">Organizational Hierarchy</h5>
+                <t t-if="state.data and state.data.org_employee">
+                    <t t-set="self" t-value="state.data.org_employee"/>
+                    <t t-set="children" t-value="state.data.org_children"/>
+                    <div class="d-flex align-items-center mb-3">
+                        <img t-att-src="'/web/image/hr.employee/' + self.id + '/image_128'"
+                             class="rounded-circle me-3 border"
+                             style="width: 40px; height: 40px;" t-if="self.id"/>
+                        <div class="fw-bold text-dark">
+                            <t t-esc="self.name"/>
+                        </div>
+                    </div>
+                    <div class="ms-4 ps-3 border-start">
+                        <t t-foreach="children" t-as="child" t-key="child.id">
+                            <div class="d-flex align-items-center mb-2">
+                                <img t-att-src="'/web/image/hr.employee/' + child.id + '/image_128'"
+                                     class="rounded-circle me-3 border"
+                                     style="width: 36px; height: 36px;" t-if="child.id"/>
+                                <div class="fw-medium text-dark">
+                                    <t t-esc="child.name"/>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+            <div class="card border-0 shadow-sm p-2 my-2 bg-white">
+                <h5 class="text-info mb-3">Attendance Chart</h5>
+                <canvas id="attendanceChart" height="100"></canvas>
+            </div>
+            <div class="card border-0 shadow-sm p-2 my-2 bg-white">
+                <h5 class="text-info mb-3">Experience Chart Chart</h5>
+                <canvas id="experienceChart" height="100"></canvas>
+            </div>
+        </div>
     </t>
 </templates>
+
+
+        <!--<?xml version="1.0" encoding="UTF-8" ?>-->
+        <!--<templates>-->
+        <!--    <t t-name="employee_dashboard.EmployeeDashboard" owl="1">-->
+        <!--        <div class="container mt-4">-->
+        <!--            <h2 class="text-center mb-4">Employee Dashboard</h2>-->
+        <!--            <div class="col w-80">-->
+        <!--                <div class="card shadow-sm" data-type="personal_information" t-on-click="onCardClick">-->
+        <!--                    <div class="card-body">-->
+        <!--                        <div class="h1 text-muted">Personal Info</div>-->
+        <!--                        <div class="h5 fw-bold text-dark">-->
+        <!--                            <t t-if="state.data">-->
+        <!--                                Name:-->
+        <!--                                <t t-esc="state.data.employee_name"/>-->
+        <!--                            </t>-->
+        <!--                        </div>-->
+        <!--                        <div class="h5 fw-bold text-dark">-->
+        <!--                            <t t-if="state.data">-->
+        <!--                                Email:-->
+        <!--                                <t t-esc="state.data.employee_email"/>-->
+        <!--                            </t>-->
+        <!--                        </div>-->
+        <!--                        <div class="h5 fw-bold text-dark">-->
+        <!--                            <t t-if="state.data">-->
+        <!--                                Phone:-->
+        <!--                                <t t-esc="state.data.employee_phone"/>-->
+        <!--                            </t>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--            <br/>-->
+        <!--            <div class="row g-2">-->
+        <!--                <div class="col-lg-6 m-0 p-0">-->
+        <!--                    <div class="shadow-sm border m-2 p-4 bg-white text-center" data-type="attendance"-->
+        <!--                         t-on-click="onCardClick">-->
+        <!--                        <div class="h3 text-muted">Attendance</div>-->
+        <!--                        <div class="h1 fw-bold text-dark">-->
+        <!--                            <t t-if="state.data">-->
+        <!--                                <t t-esc="state.data.total_attendance"/>-->
+        <!--                                hrs-->
+        <!--                            </t>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--                <div class="col-lg-6 m-0 p-0">-->
+        <!--                    <div class="shadow-sm border m-2 p-4 bg-white text-center" data-type="leave"-->
+        <!--                         t-on-click="onCardClick">-->
+        <!--                        <div class="h3 text-muted">Leaves</div>-->
+        <!--                        <div class="h1 fw-bold text-dark">-->
+        <!--                            <t t-if="state.data">-->
+        <!--                                <t t-esc="state.data.total_leaves"/>-->
+        <!--                                Days-->
+        <!--                            </t>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--            <div class="row g-2">-->
+        <!--                <div class="col-lg-6 m-0 p-0">-->
+        <!--                    <div class="shadow-sm border m-2 p-4 bg-white text-center" data-type="project"-->
+        <!--                         t-on-click="onCardClick">-->
+        <!--                        <div class="h3 text-muted">Projects</div>-->
+        <!--                        <div class="h1 fw-bold text-dark">-->
+        <!--                            <t t-if="state.data">-->
+        <!--                                <t t-esc="state.data.total_projects"/>-->
+        <!--                            </t>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--                <div class="col-lg-6 m-0 p-0">-->
+        <!--                    <div class="shadow-sm border m-2 p-4 bg-white text-center" data-type="task"-->
+        <!--                         t-on-click="onCardClick">-->
+        <!--                        <div class="h3 text-muted">Tasks</div>-->
+        <!--                        <div class="h1 fw-bold text-dark">-->
+        <!--                            <t t-if="state.data">-->
+        <!--                                <t t-esc="state.data.tasks.length"/>-->
+        <!--                            </t>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--                <div class="row g-2">-->
+        <!--                    <div class="col-lg-6 m-0 p-0">-->
+        <!--                        <div class="shadow-sm border m-2 p-4 bg-white text-center">-->
+        <!--                            <div class="h3 text-muted mb-3">Experience</div>-->
+        <!--                            <t t-if="state.data and state.data.experience.length">-->
+        <!--                                <t t-if="state.data.experience">-->
+        <!--                                    <t t-foreach="state.data.experience" t-as="line" t-key="line.name">-->
+        <!--                                        <div class="mb-3 text-start">-->
+        <!--                                            <div class="h4 fw-bold text-dark">-->
+        <!--                                                <t t-esc="line.name"/>-->
+        <!--                                            </div>-->
+        <!--                                            <div class="h5 text-muted">-->
+        <!--                                                <t t-esc="line.date_start"/>-->
+        <!--                                                - -->
+        <!--                                                <t t-esc="line.date_end or 'Present'"/>-->
+        <!--                                            </div>-->
+        <!--                                            <div class="text-secondary">-->
+        <!--                                                <t t-esc="line.description"/>-->
+        <!--                                            </div>-->
+        <!--                                        </div>-->
+        <!--                                    </t>-->
+        <!--                                    <t t-if="!state.data.experience.length">-->
+        <!--                                        <div class="text-muted">No experience data available</div>-->
+        <!--                                    </t>-->
+        <!--                                </t>-->
+        <!--                            </t>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                    <div class="col-lg-6 m-0 p-0">-->
+        <!--                        <div class="shadow-sm border m-2 p-4 bg-white text-center">-->
+        <!--                            <h3 class="card-title text-muted">Org Chart</h3>-->
+        <!--                            <t t-if="state.data and state.data.org_employee">-->
+        <!--                                <t t-set="self" t-value="state.data.org_employee"/>-->
+        <!--                                <t t-set="children" t-value="state.data.org_children"/>-->
+        <!--                                <div class="d-flex align-items-center mb-3">-->
+        <!--                                    <img t-att-src="'/web/image/hr.employee/' + self.id + '/image_128'"-->
+        <!--                                         class="rounded-circle me-3"-->
+        <!--                                         style="width: 40px; height: 40px;" t-if="self.id"/>-->
+        <!--                                    <div class="text-start">-->
+        <!--                                        <div class="fw-bold text-dark">-->
+        <!--                                            <t t-esc="self.name"/>-->
+        <!--                                        </div>-->
+        <!--                                    </div>-->
+        <!--                                </div>-->
+        <!--                                <div class="ms-4 ps-4 border-start">-->
+        <!--                                    <t t-foreach="children" t-as="child" t-key="child.id">-->
+        <!--                                        <div class="d-flex align-items-center mb-2">-->
+        <!--                                            <img t-att-src="'/web/image/hr.employee/' + child.id + '/image_128'"-->
+        <!--                                                 class="rounded-circle me-3"-->
+        <!--                                                 style="width: 36px; height: 36px;" t-if="child.id"/>-->
+        <!--                                            <div class="text-start">-->
+        <!--                                                <div class="fw-bold text-dark">-->
+        <!--                                                    <t t-esc="child.name"/>-->
+        <!--                                                </div>-->
+        <!--                                            </div>-->
+        <!--                                        </div>-->
+        <!--                                    </t>-->
+        <!--                                </div>-->
+        <!--                            </t>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <!--    </t>-->
+        <!--</templates>-->
