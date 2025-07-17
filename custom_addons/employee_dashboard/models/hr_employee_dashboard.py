@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """hr employee model"""
-from datetime import date
 
 from odoo import models, api
 from odoo.http import request
@@ -28,6 +27,7 @@ class HrEmployeeDashboard(models.Model):
         tasks = request.env['project.task'].sudo().search([
             ('user_ids', '=', user.id)])
         task_list = [{
+            'id': t.id,
             'name': t.name,
             'project': t.project_id.name,
             'deadline': t.date_deadline.strftime('%Y-%m-%d') if t.date_deadline else '',
@@ -67,7 +67,6 @@ class HrEmployeeDashboard(models.Model):
             'name': child.name,
             'job_title': child.job_id.name if child.job_id else ''
         } for child in employee.child_ids]
-
         org_managers_more = False
         return {
             'employee_name': employee.name,

@@ -10,13 +10,16 @@ export class EmployeeDashboard extends Component {
      setup() {
         this.orm = useService("orm");
         this.action = useService("action");
-        this.state = useState({ data: null });
+        this.state = useState({ data: null});
+        this.filteredTasks = useState({ list: [] });
+        this.filter = useState({ deadline: "all" });
         onMounted(async () => {
             await loadJS("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js");
             const data = await this.orm.call("hr.employee.dashboard", "get_employee_dashboard_data");
             this.state.data = data;
-            this.renderAttendanceChart();
+            this.renderTaskProjectChart();
             this.renderExperienceChart();
+            this.filteredTasks.list = this.filterTasks(this.state.data.tasks, this.filter.deadline);
         });
      }
     onCardClick(ev) {
@@ -34,70 +37,149 @@ export class EmployeeDashboard extends Component {
             this.action.doAction('hr.hr_employee_public_action');
         }
     }
-    renderAttendanceChart() {
-        const ctx = document.getElementById("attendanceChart");
-        const data = this.props.attendance_data || {
-            labels: ["Mon", "Tue", "Wed", "Thu", "Fri"],
-            values: [8, 7, 6, 9, 8],
-        };
-        new Chart(ctx, {
-            type: "bar",
-            data: {
-                labels: data.labels,
-                datasets: [{
-                    label: "Hours Worked",
-                    data: data.values,
-                    backgroundColor: "#4B77BE",
-                    borderRadius: 6,
-                }],
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
+    onTaskClick(ev) {
+    const taskId = ev.currentTarget.dataset.taskId;
+    if (!taskId) {
+        alert("No task ID found");
+        return;
+    }
+    this.action.doAction({
+        type: "ir.actions.act_window",
+        res_model: "project.task",
+        res_id: parseInt(taskId),
+        views: [[false, "form"]],
+        target: "current",
+    });
+}
+
+    renderTaskProjectChart() {
+    const canvas = document.getElementById("taskProjectChart");
+    const tasks = this.state.data?.tasks || [];
+
+    const projectCounts = {};
+    tasks.forEach(task => {
+        const project = task.project || "Unassigned";
+        projectCounts[project] = (projectCounts[project] || 0) + 1;
+    });
+
+    const labels = Object.keys(projectCounts);
+    const counts = Object.values(projectCounts);
+
+    new Chart(canvas, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Tasks per Project",
+                data: counts,
+                backgroundColor: "rgba(54, 162, 235, 0.6)",
+                borderColor: "rgba(54, 162, 235, 1)",
+                borderWidth: 1,
+            }],
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: "Number of Tasks",
+                    },
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { stepSize: 1 },
+                x: {
+                    title: {
+                        display: true,
+                        text: "Projects",
                     },
                 },
             },
-        });
-    }
+        }
+    });
+   }
     renderExperienceChart() {
-    const ctx = document.getElementById("experienceChart");
-    const experienceData = this.props.experience_data || {
-        labels: ["Company A", "Company B", "Company C"],
-        values: [2, 1, 3],
-    };
-
-    new Chart(ctx, {
-        type: "bar",
+    const canvas = document.getElementById("experienceChart");
+    const resumeLines = this.state.data?.experience || [];
+    if (!resumeLines.length || !window.Chart) {
+        console.warn("Chart.js not loaded or resumeLines empty.");
+        return;
+    }
+    const labels = [];
+    const durations = [];
+    resumeLines.forEach(line => {
+        const start = line.date_start ? new Date(line.date_start) : null;
+        const end = line.date_end ? new Date(line.date_end) : new Date();
+        if (start) {
+            const diffYears = ((end - start) / (1000 * 60 * 60 * 24 * 365)).toFixed(1);
+            labels.push(line.name || "Unknown");
+            durations.push(parseFloat(diffYears));
+        }
+    });
+    new Chart(canvas, {
+        type: "line",
         data: {
-            labels: experienceData.labels,
+            labels: labels,
             datasets: [{
-                label: "Years of Experience",
-                data: experienceData.values,
-                backgroundColor: "#F39C12",
-                borderRadius: 6,
+                label: "Experience (years)",
+                data: durations,
+                fill: false,
+                borderColor: "#3498DB",
+                backgroundColor: "#3498DB",
+                tension: 0.3,
+                pointRadius: 5,
+                pointBackgroundColor: "#2980B9",
             }],
         },
         options: {
             responsive: true,
             plugins: {
-                legend: { display: false },
+                legend: { display: true },
             },
             scales: {
                 y: {
                     beginAtZero: true,
-                    ticks: { stepSize: 1 },
+                    title: {
+                        display: true,
+                        text: "Years",
+                    },
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: "Experience Name",
+                    },
                 },
             },
         },
     });
+  }
+  onDeadlineFilterChange(ev) {
+    const selected = ev.target.value;
+    this.filter.deadline = selected;
+    this.filteredTasks.list = this.filterTasks(this.state.data.tasks, selected);
 }
+filterTasks(tasks, filterType) {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
 
+    return tasks.filter(task => {
+        if (!task.deadline) return false;
+
+        const deadline = new Date(task.deadline);
+        switch (filterType) {
+            case "this_month":
+                return deadline.getMonth() === currentMonth && deadline.getFullYear() === currentYear;
+            case "upcoming":
+                return deadline > now;
+            case "overdue":
+                return deadline < now;
+            case "all":
+            default:
+                return true;
+        }
+    });
+}
 }
 actionRegistry.add("employee_dashboard_tag", EmployeeDashboard);
 
