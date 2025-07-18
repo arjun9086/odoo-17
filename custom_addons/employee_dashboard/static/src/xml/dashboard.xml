@@ -6,12 +6,13 @@
             <!-- Page Header -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="fw-bold text-dark mb-0">Employee Dashboard</h3>
-                <select class="form-select w-auto ms-auto">
-                    <option value="all">All</option>
-                    <option value="this_month">This Month</option>
-                    <option value="last_month">Last Month</option>
-                    <option value="last_3_months">Last 3 Months</option>
-                </select>
+                <div class="d-flex align-items-center gap-3 ms-auto">
+                    Start:
+                    <input type="date" t-model="filter.start_date" class="form-control form-control-sm"/>
+                    End:
+                    <input type="date" t-model="filter.end_date" class="form-control form-control-sm"/>
+                    <button class="btn btn-primary btn-sm" t-on-click="onDateRangeApply">Apply</button>
+                </div>
             </div>
             <!-- Profile Section -->
             <div class="row justify-content-start mb-4" t-if="state.data">
@@ -125,29 +126,39 @@
                 <div class="col-md-6">
                     <div class="card border-0 shadow-sm bg-white p-4">
                         <h5 class="text-danger border-bottom pb-2 mb-3">Organizational Hierarchy</h5>
-                        <t t-if="state.data and state.data.org_employee">
-                            <t t-set="self" t-value="state.data.org_employee"/>
-                            <t t-set="children" t-value="state.data.org_children"/>
-                            <div class="d-flex align-items-center mb-3">
-                                <img t-att-src="'/web/image/hr.employee/' + self.id + '/image_128'"
-                                     class="rounded-circle me-3 border"
-                                     style="width: 40px; height: 40px;" t-if="self.id"/>
-                                <div class="fw-bold text-dark">
-                                    <t t-esc="self.name"/>
-                                </div>
-                            </div>
-                            <div class="ms-4 ps-3 border-start-end">
-                                <t t-foreach="children" t-as="child" t-key="child.id">
-                                    <div class="d-flex align-items-center mb-1">
-                                        <img t-att-src="'/web/image/hr.employee/' + child.id + '/image_128'"
-                                             class="rounded-circle me-3 border"
-                                             style="width: 36px; height: 36px;" t-if="child.id"/>
-                                        <div class="fw-medium text-dark">
-                                            <t t-esc="child.name"/>
+                        <!-- Top-level: Manager chain -->
+                        <t t-if="state.data and state.data.org_managers.length">
+                            <div class="mb-2">
+                                <t t-foreach="state.data.org_managers" t-as="mgr" t-key="mgr.id">
+                                    <div class="ms-0 ps-0 border-end border-2 ps-3 mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <img t-att-src="'/web/image/hr.employee/' + mgr.id + '/image_128'"
+                                                 class="rounded-circle me-3 border"
+                                                 style="width: 36px; height: 36px;" t-if="mgr.id"/>
+                                            <div class="fw-medium text-dark">
+                                                <t t-esc="mgr.name"/>
+                                            </div>
                                         </div>
                                     </div>
                                 </t>
                             </div>
+                        </t>
+                        <!-- Current employee -->
+                        <div class="text-center my-3">
+                            <t t-if="state.data and state.data.org_employee">
+                                <img t-att-src="'/web/image/hr.employee/' + state.data.org_employee.id + '/image_128'"
+                                     class="rounded-circle border mb-2"
+                                     style="width: 60px; height: 60px;"/>
+                                <div class="fw-bold text-dark">
+                                    <t t-esc="state.data.org_employee.name"/>
+                                </div>
+                            </t>
+                        </div>
+                        <!-- Recursive Child Renderer -->
+                        <t t-call="employee_dashboard.RecursiveSubordinates">
+                            <t t-if="state.data and state.data.org_employee">
+                                <t t-set="nodes" t-value="state.data.org_employee.children"/>
+                            </t>
                         </t>
                     </div>
                 </div>
@@ -173,9 +184,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!--                            <t t-if="state.data and state.data.tasks.length">-->
                             <t t-if="filteredTasks.list.length">
-                                <!--                                <t t-foreach="state.data.tasks" t-as="task" t-key="task.name">-->
                                 <t t-foreach="filteredTasks.list" t-as="task" t-key="task.id">
                                     <tr class="border-bottom" t-on-click="onTaskClick" t-att-data-task-id="task.id">
                                         <td>
@@ -228,6 +237,25 @@
             </div>
         </div>
     </t>
+    <t t-name="employee_dashboard.RecursiveSubordinates" owl="1">
+        <div class="d-flex justify-content-center gap-4 mt-3" t-if="nodes and nodes.length">
+            <t t-foreach="nodes" t-as="node" t-key="node.id">
+                <div class="text-center">
+                    <img t-att-src="'/web/image/hr.employee/' + node.id + '/image_128'"
+                         class="rounded-circle border mb-1"
+                         style="width: 48px; height: 48px;"/>
+                    <div class="fw-medium text-dark">
+                        <t t-esc="node.name"/>
+                    </div>
+                    <!-- Render their children recursively -->
+                    <t t-call="employee_dashboard.RecursiveSubordinates">
+                        <t t-set="nodes" t-value="node.children"/>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </t>
+
 </templates>
 
 
